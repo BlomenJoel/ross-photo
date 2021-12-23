@@ -7,7 +7,8 @@ const scene = new THREE.Scene()
 
 // Load GLFT
 let tree = undefined;
-
+let mixer = undefined;
+let action = undefined;
 const DRACOLoaderImport = () => import('three/examples/jsm/loaders/DRACOLoader.js')
 const GLTFLoaderImport = () => import('three/examples/jsm/loaders/GLTFLoader.js');
 
@@ -26,6 +27,13 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
             scene.add( gltf.scene );
             dispatch('loaded')
             tree = gltf.scene;
+            tree.scale.set(7, 7, 7);
+            tree.position.set(0, -8, -5);
+            const animations: THREE.AnimationClip[] =  gltf.animations;
+            mixer = new THREE.AnimationMixer(gltf.scene);
+            action = mixer.clipAction(animations[0])
+            action.setLoop(THREE.LoopPingPong, 500000).play()
+            mixer.setTime(3)
         },
         // called while loading is progressing
         function ( xhr ) {
@@ -115,8 +123,12 @@ const onDocumentMouseMove = (event) => {
 
 document.addEventListener('mousemove', onDocumentMouseMove);
 
-
 const clock = new THREE.Clock();
+ window.setInterval(() => {
+    action.stop();
+    action.setLoop(THREE.LoopPingPong, 500000).play()
+    mixer.setTime(2)
+}, 8400)
 
 const tick = () =>
 {
@@ -127,19 +139,22 @@ const tick = () =>
     // Update Objects
     const elapsedTime = clock.getElapsedTime();
     if(tree) {
-        tree.scale.set(7, 7, 7);
-        tree.position.set(0, -8, -5);
         tree.rotation.y = .5 * elapsedTime;
-
         tree.rotation.y += .5 * (targetX - tree.rotation.y)
         tree.rotation.x += .5 * (targetY - tree.rotation.x)
+        
+        tree.position.x  += .5 * (targetX - tree.position.x)
     }
 
+    
     // Render
     renderer.render(scene, camera)
-
+    
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+    if(mixer) {
+        mixer.update(0.0061)
+    } 
 }
 
 tick()

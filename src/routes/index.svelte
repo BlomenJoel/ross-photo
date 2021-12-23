@@ -46,7 +46,6 @@
 		font-weight: bolder;
 		font-size: 5rem;
 		text-shadow: 3px 3px var(--accent-color);
-		backdrop-filter: blur(2px);
 	}
 
 	@media (max-width: 480px) {

@@ -47,7 +47,7 @@
 		font-size: 5rem;
 		text-shadow: 3px 3px var(--accent-color);
 	}
-
+	
 	@media (max-width: 480px) {
 		h1 {
 			font-size: 3rem;

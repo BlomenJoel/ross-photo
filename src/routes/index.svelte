@@ -48,5 +48,11 @@
 		text-shadow: 3px 3px var(--accent-color);
 		backdrop-filter: blur(2px);
 	}
+
+	@media (max-width: 480px) {
+		h1 {
+			font-size: 3rem;
+		}
+	}
 	
 </style>

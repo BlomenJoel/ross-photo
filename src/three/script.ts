@@ -51,7 +51,7 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
  */
 const sizes = {
     width: window.innerWidth/1,
-    height: window.innerHeight/1.5
+    height: window.innerHeight/1.4
 }
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -81,7 +81,7 @@ window.addEventListener('resize', () =>
 {
     // Update sizes
     sizes.width = window.innerWidth
-    sizes.height = window.innerHeight
+    sizes.height = window.innerHeight / 1.4
 
     // Update camera
     camera.aspect = sizes.width / sizes.height
@@ -139,11 +139,12 @@ const tick = () =>
     // Update Objects
     const elapsedTime = clock.getElapsedTime();
     if(tree) {
-        tree.rotation.y = .5 * elapsedTime;
+        tree.rotation.y = .2 * elapsedTime;
         tree.rotation.y += .5 * (targetX - tree.rotation.y)
         tree.rotation.x += .5 * (targetY - tree.rotation.x)
         
-        tree.position.x  += .5 * (targetX - tree.position.x)
+        tree.position.x  += .5 * ((mouseX * 0.04) - tree.position.x)
+        tree.position.y  += .5 * (- (mouseY * 0.01) - tree.position.y)
     }
 
     

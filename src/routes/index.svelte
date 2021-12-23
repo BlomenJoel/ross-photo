@@ -33,7 +33,6 @@
 		justify-content: center;
 		align-items: center;
 		flex: 1;
-		position: relative;
 	}
 
 	h1 {
@@ -44,6 +43,8 @@
 		margin-left: auto;
 		width: auto;
 		margin-right:auto;
+		font-weight: bolder;
+		font-size: 5rem;
 	}
 	
 </style>

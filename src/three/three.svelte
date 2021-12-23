@@ -25,7 +25,7 @@
 		position: absolute;
 		margin-left: auto;
 		margin-right: auto;
-    	top: 30%;
+    	bottom: 0;
     	outline: none;    
 	}
 </style>

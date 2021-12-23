@@ -3,6 +3,11 @@
 </script>
 
 <script lang="ts">
+		import Three from '../three/three.svelte'
+		let loaded = false;
+
+		const dispatchLoaded = () => loaded = true;
+
 </script>
 
 <svelte:head>
@@ -11,41 +16,34 @@
 
 <section>
 	<div class="welcome">
-		<picture>
-			<source srcset="svelte-welcome.webp" type="image/webp" />
-			<img src="svelte-welcome.png" alt="Welcome" />
-		</picture>
 	</div>
 	<h1>
-		to Ross's gallery
+		HIGHER <br/>PERSPECTIVE <br/> DRONING
 	</h1>
+	<Three on:loaded={dispatchLoaded} />
+	{#if !loaded}
+			<p>Loading</p>
+	{/if}
 </section>
 
-<style>
+<style scoped>
 	section {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		flex: 1;
+		position: relative;
 	}
 
 	h1 {
 		width: 100%;
+		color:whitesmoke;
+		z-index: 2;
+		text-align: left;
+		margin-left: auto;
+		width: auto;
+		margin-right:auto;
 	}
-
-	.welcome {
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
-	}
+	
 </style>

@@ -1,36 +1,49 @@
 <script lang="ts">
+import Modal from "./Modal.svelte";
     export let data;
-    let firstName, lastName, contactReason, message,email = undefined;
-    const submit = () => {
-        console.log('submited', firstName, lastName, contactReason, message)
+    let emailSuccessFull = undefined;
+    let firstName: string, lastName: string, contactReason: string, message: string, email: string = '';
+    const submit = async () => {
+        const data = {firstName, lastName, contactReason, message, email};
+        const res = await fetch('send-email.json', 
+            { method: 'POST', body: JSON.stringify(data)});
+
+        emailSuccessFull = res.status === 200;
+        setTimeout(() => {emailSuccessFull = undefined }, 3000);
     }
 </script>
-
-
+{#if emailSuccessFull}
+<Modal on:close={() => emailSuccessFull = false}>
+    <span slot="header">
+        <h3>Email sent!</h3>
+    </span>
+</Modal>
+{/if}
 <h2 class="pb-4">{data.rubric}</h2>
+
 
 <form on:submit|preventDefault={submit}>
     <div class="d-flex">
         <div>
             <div class="pr-2">
                 <label for="fname">{data.firstFieldLabel}</label>
-                <input required type="text" id="fname" name="firstname" placeholder="{data.firstFieldPlaceholder}" bind:value={firstName}>
+                <input required  type="text" id="fname" name="firstname" placeholder="{data.firstFieldPlaceholder}" bind:value={firstName}>
             </div>
             
             <div>
                 <label for="lname">{data.secondFieldLabel}</label>
-                <input required type="text" id="lname" name="lastname" placeholder="{data.secondFieldPlaceholder}" bind:value={lastName}>
+                <input required  type="text" id="lname" name="lastname" placeholder="{data.secondFieldPlaceholder}" bind:value={lastName}>
             </div>
         </div>
         <div>
             <div class="pr-2">
                 <label for="email">{data.emailFieldLabel}</label>
-                <input required type="email" id="email" name="lastname" placeholder="{data.emailFieldPlaceholder}" bind:value={email}>
+                <input required  type="email" id="email" name="lastname" placeholder="{data.emailFieldPlaceholder}" bind:value={email}>
             </div>
             
             <div>
                 <label for="contactReason">{data.optionFieldLabel}</label>
-                <select id="contactReason" name="contactReason" bind:value={contactReason} required>
+                <select required id="contactReason" name="contactReason" bind:value={contactReason} >
                     {#each data.options as option }
                     <option value="{option}">{option}</option>
                     {/each}

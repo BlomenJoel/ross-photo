@@ -27,8 +27,8 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
             scene.add( gltf.scene );
             dispatch('loaded')
             tree = gltf.scene;
-            tree.scale.set(7, 7, 7);
-            tree.position.set(0, -8, -5);
+            tree.scale.set(5, 5, 5);
+            tree.position.set(0, -12, -5);
             const animations: THREE.AnimationClip[] =  gltf.animations;
             mixer = new THREE.AnimationMixer(gltf.scene);
             action = mixer.clipAction(animations[0])
@@ -50,8 +50,8 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
  * Sizes
  */
 const sizes = {
-    width: window.innerWidth/1,
-    height: window.innerHeight/1.4
+    width: window.innerWidth,
+    height: window.innerHeight
 }
 // Canvas
 const canvas = document.querySelector('canvas.webgl')

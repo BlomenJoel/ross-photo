@@ -27,5 +27,6 @@
 		margin-right: auto;
     	bottom: 0;
     	outline: none;    
+		z-index: -1;
 	}
 </style>

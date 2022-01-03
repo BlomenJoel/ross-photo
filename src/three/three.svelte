@@ -25,7 +25,7 @@
 		position: absolute;
 		margin-left: auto;
 		margin-right: auto;
-    	bottom: 0;
+    	top: 0;
     	outline: none;    
 		z-index: -1;
 	}

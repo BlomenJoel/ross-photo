@@ -66,6 +66,25 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
+// STARS // STARS // STARS
+const geometry = new THREE.TetrahedronGeometry(0.09,5);
+const material = new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shading: THREE.FlatShading
+})
+const starsArray = new THREE.Object3D()
+scene.add(starsArray)
+for(let i = 0; i< 600; i++) {
+    const mesh = new THREE.Mesh(geometry, material)
+    mesh.position.set(
+        Math.random() - 0.5,
+        Math.random() - 0.5,
+        Math.random() - 0.5)
+        mesh.position.multiplyScalar(90 + (Math.random() * 7))
+        mesh.rotation.set(Math.random() * 20,Math.random() * 20,Math.random() * 20)
+        starsArray.add(mesh)
+}
+
 // // Lights
 // LIGHT 1
 const pointLight1 = new THREE.PointLight(0xffffff, 2)
@@ -81,7 +100,7 @@ window.addEventListener('resize', () =>
 {
     // Update sizes
     sizes.width = window.innerWidth
-    sizes.height = window.innerHeight / 1.4
+    sizes.height = window.innerHeight
 
     // Update camera
     camera.aspect = sizes.width / sizes.height
@@ -120,18 +139,39 @@ const onDocumentMouseMove = (event) => {
     mouseX = (event.clientX - windowHalfX)
     mouseY = (event.clientY - windowHalfY)   
 }
+let lastScrollTop = 0;
+
+
+const onDocumentScroll = (event) => {
+    const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+    if (st > lastScrollTop){
+        console.log('scrolling down,', event)
+        
+        // downscroll code
+    } else {
+        console.log('scrolling up,', event)
+       // upscroll code
+    }
+    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling   
+}
 
 document.addEventListener('mousemove', onDocumentMouseMove);
+document.addEventListener('scroll',onDocumentScroll)
 
 const clock = new THREE.Clock();
  window.setInterval(() => {
     action.stop();
     action.setLoop(THREE.LoopPingPong, 500000).play()
-    mixer.setTime(2)
+    mixer.setTime(3)
 }, 8400)
 
 const tick = () =>
 {
+    starsArray.rotation.x += 0.000;
+    starsArray.rotation.y -= 0.0040;
+    starsArray.rotation.z -= 0.002;
+
+
 
     targetX = mouseX * 0.001;
     targetY = mouseY * 0.001;

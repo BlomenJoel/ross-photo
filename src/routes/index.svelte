@@ -33,7 +33,7 @@ import type { Load } from '@sveltejs/kit';
 		HIGHER <br/>PERSPECTIVE <br/> DRONING
 	</h1>
 	<Three on:loaded={dispatchLoaded} />
-		<ContactForm data={data[0]}/>
+		<!-- <ContactForm data={data[0]}/> -->
 </section>
 
 <style scoped>

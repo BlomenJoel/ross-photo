@@ -6,7 +6,7 @@ export const test = async (dispatch):Promise<void> => {
 const scene = new THREE.Scene()
 
 // Load GLFT
-let tree = undefined;
+let model = undefined;
 let mixer = undefined;
 let action = undefined;
 const DRACOLoaderImport = () => import('three/examples/jsm/loaders/DRACOLoader.js')
@@ -26,9 +26,9 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
         function ( gltf ) {
             scene.add( gltf.scene );
             dispatch('loaded')
-            tree = gltf.scene;
-            tree.scale.set(5, 5, 5);
-            tree.position.set(0, -12, -5);
+            model = gltf.scene;
+            model.scale.set(5, 5, 5);
+            model.position.set(0, -12, -5);
             const animations: THREE.AnimationClip[] =  gltf.animations;
             mixer = new THREE.AnimationMixer(gltf.scene);
             action = mixer.clipAction(animations[0])
@@ -74,7 +74,7 @@ const material = new THREE.MeshPhongMaterial({
 })
 const starsArray = new THREE.Object3D()
 scene.add(starsArray)
-for(let i = 0; i< 600; i++) {
+for(let i = 0; i< 2000; i++) {
     const mesh = new THREE.Mesh(geometry, material)
     mesh.position.set(
         Math.random() - 0.5,
@@ -140,51 +140,98 @@ const onDocumentMouseMove = (event) => {
     mouseY = (event.clientY - windowHalfY)   
 }
 let lastScrollTop = 0;
-
+const states = {
+    neutral: 'neutral',
+    up: 'up',
+    down: 'down',
+    returningDown: 'returningDown',
+    returningUp: 'returningUp',
+};
+let state = states.neutral;
 
 const onDocumentScroll = (event) => {
-    const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-    if (st > lastScrollTop){
-        console.log('scrolling down,', event)
-        
-        // downscroll code
-    } else {
-        console.log('scrolling up,', event)
-       // upscroll code
+    if(state === states.neutral) {
+        const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
+        if (st > lastScrollTop){
+            state = states.down
+            dispatch('scrolling-down')
+        } else {
+            state = states.up
+            dispatch('scrolling-up')
+        }
+        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling   
     }
-    lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling   
 }
 
+function zoom(event) {
+    if(state === states.neutral) {
+        if(event.deltaY < 0) {
+            state = states.up;
+            dispatch('scrolling-up')
+        } else {
+            state = states.down;
+            dispatch('scrolling-down')
+        }
+    }
+}
+
+
 document.addEventListener('mousemove', onDocumentMouseMove);
-document.addEventListener('scroll',onDocumentScroll)
+document.addEventListener('scroll', onDocumentScroll)
+document.addEventListener('wheel', zoom)
 
 const clock = new THREE.Clock();
  window.setInterval(() => {
     action.stop();
     action.setLoop(THREE.LoopPingPong, 500000).play()
-    mixer.setTime(3)
-}, 8400)
+    mixer.setTime(2)
+}, 7800)
 
 const tick = () =>
 {
-    starsArray.rotation.x += 0.000;
+    starsArray.rotation.x += 0.004;
     starsArray.rotation.y -= 0.0040;
     starsArray.rotation.z -= 0.002;
-
-
-
+    
+    
+    
     targetX = mouseX * 0.001;
     targetY = mouseY * 0.001;
-
+    
     // Update Objects
     const elapsedTime = clock.getElapsedTime();
-    if(tree) {
-        tree.rotation.y = .2 * elapsedTime;
-        tree.rotation.y += .5 * (targetX - tree.rotation.y)
-        tree.rotation.x += .5 * (targetY - tree.rotation.x)
-        
-        tree.position.x  += .5 * ((mouseX * 0.04) - tree.position.x)
-        tree.position.y  += .5 * (- (mouseY * 0.01) - tree.position.y)
+    if(model) {
+        // Constant rotation
+        // model.rotation.y = .5 * elapsedTime;
+        model.rotation.y += .5 * (targetX - model.rotation.y)
+        model.rotation.x += .5 * (targetY - model.rotation.x)
+
+        // Moving down
+        if(state === states.down) {
+            starsArray.rotation.x += 0.01;
+
+            model.translateY(-0.25)
+            if(model.position.y <= -30) {
+                dispatch('scrolled-down')
+                state = states.returningUp;
+            }
+            // Moving up
+        } else if(state === states.up) {
+            starsArray.rotation.x -= 0.01;
+            model.translateY(0.25)
+            if(model.position.y >= 45) {
+                dispatch('scrolled-up')
+                state = states.returningDown;
+            }
+            // Recentering and follow mouse
+        } else {
+            if(0.5 > model.position.y &&  model.position.y < 0.5 ){
+                state = states.neutral;
+            }
+            
+            model.position.x  += .5 * ((mouseX * 0.04) - model.position.x)
+            model.translateY(.5 * (- (mouseY * 0.01) - model.position.y))
+        }
     }
 
     

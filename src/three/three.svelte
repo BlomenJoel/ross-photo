@@ -3,9 +3,10 @@
 </script>
 
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
-
+	
+	export let show;
     const dispatch = createEventDispatcher();
 	onMount(() => {
 		if(window) {
@@ -15,13 +16,13 @@
 	});
 </script>
 
-<canvas class="webgl"></canvas>
+<canvas class="webgl" hidden={!show}></canvas>
 
 
 <style>
 	canvas {
-		height: -webkit-fill-available;
-		width: -webkit-fill-available;
+		height: -webkit-fill-available !important;
+		width: -webkit-fill-available !important;
 		position: absolute;
 		margin-left: auto;
 		margin-right: auto;

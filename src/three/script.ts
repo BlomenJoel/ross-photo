@@ -1,8 +1,19 @@
 import './style.css'
 import * as THREE from 'three'
+import { wheelEvent } from './events/wheel'
+import { onDocumentScroll } from './events/scroll';
+import type { Dispatch, StateMachine } from '$lib/types';
 
-export const test = async (dispatch):Promise<void> => {
-// Scene
+export const states = {
+    neutral: 'neutral',
+    up: 'up',
+    down: 'down',
+    returningDown: 'returningDown',
+    returningUp: 'returningUp',
+};
+
+export const test = async (dispatch: Dispatch):Promise<void> => {
+    // Scene
 const scene = new THREE.Scene()
 
 // Load GLFT
@@ -139,49 +150,15 @@ const onDocumentMouseMove = (event) => {
     mouseX = (event.clientX - windowHalfX)
     mouseY = (event.clientY - windowHalfY)   
 }
-let lastScrollTop = 0;
-const states = {
-    neutral: 'neutral',
-    up: 'up',
-    down: 'down',
-    returningDown: 'returningDown',
-    returningUp: 'returningUp',
-};
-let state = states.neutral;
-
-const onDocumentScroll = (event) => {
-    if(state === states.neutral) {
-        const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
-        if (st > lastScrollTop){
-            state = states.down
-            dispatch('scrolling-down')
-        } else {
-            state = states.up
-            dispatch('scrolling-up')
-        }
-        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling   
-    }
-}
-
-function zoom(event) {
-    if(state === states.neutral) {
-        if(event.deltaY < 0) {
-            state = states.up;
-            dispatch('scrolling-up')
-        } else {
-            state = states.down;
-            dispatch('scrolling-down')
-        }
-    }
-}
-
+const stateMachine: StateMachine = {state: states.neutral, page: 0};
 
 document.addEventListener('mousemove', onDocumentMouseMove);
-document.addEventListener('scroll', onDocumentScroll)
-document.addEventListener('wheel', zoom)
+document.addEventListener('scroll', () => onDocumentScroll(stateMachine, dispatch))
+document.addEventListener('wheel', (event) => wheelEvent(event, stateMachine, dispatch))
 
 const clock = new THREE.Clock();
- window.setInterval(() => {
+
+window.setInterval(() => {
     action.stop();
     action.setLoop(THREE.LoopPingPong, 500000).play()
     mixer.setTime(2)
@@ -192,8 +169,6 @@ const tick = () =>
     starsArray.rotation.x += 0.004;
     starsArray.rotation.y -= 0.0040;
     starsArray.rotation.z -= 0.002;
-    
-    
     
     targetX = mouseX * 0.001;
     targetY = mouseY * 0.001;
@@ -207,26 +182,25 @@ const tick = () =>
         model.rotation.x += .5 * (targetY - model.rotation.x)
 
         // Moving down
-        if(state === states.down) {
-            starsArray.rotation.x += 0.01;
+        if(stateMachine.state === states.down) {
+            // starsArray.rotation.x += 0.01;
 
             model.translateY(-0.25)
             if(model.position.y <= -30) {
-                dispatch('scrolled-down')
-                state = states.returningUp;
+                stateMachine.state = states.returningUp;
             }
             // Moving up
-        } else if(state === states.up) {
-            starsArray.rotation.x -= 0.01;
-            model.translateY(0.25)
+        } else if(stateMachine.state === states.up) {
+            // starsArray.rotation.x -= 0.01;
+            model.translateY(1)
             if(model.position.y >= 45) {
-                dispatch('scrolled-up')
-                state = states.returningDown;
+                stateMachine.state = states.returningDown;
             }
             // Recentering and follow mouse
         } else {
             if(0.5 > model.position.y &&  model.position.y < 0.5 ){
-                state = states.neutral;
+                dispatch('scrolled-finished')
+                stateMachine.state = states.neutral;
             }
             
             model.position.x  += .5 * ((mouseX * 0.04) - model.position.x)

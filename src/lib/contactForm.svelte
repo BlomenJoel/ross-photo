@@ -19,6 +19,8 @@ import Modal from "./Modal.svelte";
     </span>
 </Modal>
 {/if}
+
+{#if data}
 <h2 class="pb-4">{data.rubric}</h2>
 
 
@@ -51,15 +53,16 @@ import Modal from "./Modal.svelte";
             </div>
         </div>
     </div>
-
+    
     <label for="message">{data.textAreaFieldLabel}</label>
     <textarea required maxlength=1000 id="message" name="message" bind:value={message} placeholder="{data.textAreaFieldPlaceholder}"></textarea>
-
+    
     <input type="submit" value="{data.subminButtonText}">
-  </form>
+</form>
+{/if}
 
 <style scoped>
-form {
+    form {
     width: 80%
 }
 

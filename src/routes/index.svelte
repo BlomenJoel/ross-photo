@@ -14,22 +14,29 @@ export const load: Load = async ({ fetch, page }) => {
 </script>
 
 <script lang="ts">
+		import { slide, fly } from 'svelte/transition';
 		import Three from '../three/three.svelte'
 		import ContactForm from '$lib/contactForm.svelte';
+
 		export let data;
+
 		const pages = ['start', 'contactForm']
-		let loaded = false, show = false, scrollingDown = false, scrollingUp = false, page = 0;
+
+		let loaded = false, show = false, page = 0, transistioning = false;
 		type Direction = 'up' | 'down';
+
 		const dispatchLoaded = () => loaded = true;
-		const changePage = (direction: Direction) => {
-			if(direction === 'down' && page < pages.length - 1) {
-				page ++;
-			} else if(direction === 'up' && page > 0) {
-				page --;
-			}
+
+		const changePage = (direction: Direction, scrolling: boolean) => {
+			transistioning = scrolling;
+			if(scrolling) {
+				if(direction === 'down' && page < pages.length - 1) {
+					page ++;
+				} else if(direction === 'up' && page > 0) {
+					page --;
+				}
+			} 
 		};
-		$: scrollingDown, () => {if(scrollingDown === false) changePage('down');}
-		$: scrollingUp, () => {if(scrollingUp === false) changePage('up');}
 </script>
 
 <svelte:head>
@@ -37,24 +44,25 @@ export const load: Load = async ({ fetch, page }) => {
 </svelte:head>
 
 <section>
-	{#if pages[page] === 'start'}
-	<h1 class="pb-72">
-		HIGHER <br/>PERSPECTIVE <br/> DRONING
-	</h1>
-	<h2>Slow data connection? Don't explore</h2>
-	<button on:click="{() => show = !show}">Explore</button>
+	{#if pages[page] === 'start' && !transistioning}
+	<div in:fly="{{ duration: 250, y: -300}}" out:slide>
+		<h1 class="pb-36">
+			HIGHER <br/>PERSPECTIVE <br/> DRONING
+		</h1>
+		<button on:click="{() => show = !show}">Explore</button>
+	</div>
+	{:else if pages[page] === 'contactForm' && !transistioning}
+	<div in:slide="{{ duration: 250}}" out:slide>
+		<ContactForm  data={data[0]}/>
+	</div>
 	{/if}
 	<Three 
 		bind:show={show} 
 		on:loaded={dispatchLoaded}
-		on:scrolled-down={() => { scrollingDown = false }}
-		on:scrolled-up={() => { scrollingUp = false }} 
-		on:scrolling-down={() => { scrollingDown = true }} 
-		on:scrolling-up={() => { scrollingUp = true }} 
+		on:scrolled-finished={() => { transistioning = false }}
+		on:scrolling-down={() => changePage('down',true)} 
+		on:scrolling-up={() => changePage('up',true)} 
 	/>
-	{#if pages[page] === 'contactForm'}
-		<ContactForm data={data[0]}/>
-	{/if}
 </section>
 
 <style scoped>

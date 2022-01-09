@@ -14,4 +14,5 @@ export const previewClient = sanityClient({
   projectId,
   dataset,
   token,
+  useCdn: false,
 });

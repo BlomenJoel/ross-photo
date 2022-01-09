@@ -6,7 +6,7 @@ let lastScrollTop = 0;
 export const onDocumentScroll = (stateMachine: StateMachine, dispatch: Dispatch): void => {
     const st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
     if(stateMachine.state === states.neutral) {
-        if(stateMachine.page < 1 && st >= lastScrollTop) {
+        if(stateMachine.page < 2 && st >= lastScrollTop) {
             stateMachine.state = states.down
             stateMachine.page ++;
             dispatch('scrolling-down')

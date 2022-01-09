@@ -5,18 +5,25 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { onMount } from 'svelte';
-	
+	import {test} from './script'
+	import { browser } from "$app/env";
+
 	export let show;
     const dispatch = createEventDispatcher();
-	onMount(() => {
-		if(window) {
-			const threeImport = () => import('../three/script');
-			threeImport().then(test => test.test(dispatch));
+	// onMount(() => {
+	// 	if(window && show) {
+	// 		test(dispatch);
+	// 	}
+	// });
+	const tester = () => {
+		if(browser && show) {
+			test(dispatch)
 		}
-	});
+	}
+	$: show, tester()
 </script>
 
-<canvas class="webgl" hidden={!show}></canvas>
+<canvas class="webgl" hidden={!show} disabled={!show} /> 
 
 
 <style>

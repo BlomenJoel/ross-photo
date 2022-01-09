@@ -20,7 +20,7 @@ export const load: Load = async ({ fetch, page }) => {
 
 		export let data;
 
-		const pages = ['start', 'contactForm']
+		const pages = ['start', 'prints', 'contactForm']
 
 		let loaded = false, show = false, page = 0, transistioning = false;
 		type Direction = 'up' | 'down';
@@ -49,11 +49,30 @@ export const load: Load = async ({ fetch, page }) => {
 		<h1 class="pb-36">
 			HIGHER <br/>PERSPECTIVE <br/> DRONING
 		</h1>
-		<button on:click="{() => show = !show}">Explore</button>
+		{#if !show} 
+		<div class="flex" out:slide>
+			<button on:click="{() => show = !show}" class="inline-flex mr-24">Cool page <img alt="drone" src="/drone.png" class="icon"/> </button>
+			<a href="explore" >
+				<button class="text-black">Simple Explore</button>
+			</a>
+		</div>
+		{/if}
 	</div>
 	{:else if pages[page] === 'contactForm' && !transistioning}
 	<div in:slide="{{ duration: 250}}" out:slide>
-		<ContactForm  data={data[0]}/>
+		<a href="/contact">
+			<h1>
+				CONTACT
+			</h1>	
+		</a>
+	</div>
+	{:else if pages[page] === 'prints' && !transistioning}
+	<div in:slide="{{ duration: 250}}" out:slide>
+		<a href="/prints">
+			<h1>
+				PRINTS
+			</h1>	
+		</a>
 	</div>
 	{/if}
 	<Three 
@@ -66,14 +85,6 @@ export const load: Load = async ({ fetch, page }) => {
 </section>
 
 <style scoped>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
-
 	h1 {
 		width: 100%;
 		color:whitesmoke;
@@ -91,6 +102,5 @@ export const load: Load = async ({ fetch, page }) => {
 		h1 {
 			font-size: 3rem;
 		}
-	}
-	
+	}	
 </style>

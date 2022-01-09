@@ -13,7 +13,7 @@ export const states = {
 };
 
 export const test = async (dispatch: Dispatch):Promise<void> => {
-    // Scene
+// Scene
 const scene = new THREE.Scene()
 
 // Load GLFT

@@ -27,7 +27,7 @@ import Modal from "./Modal.svelte";
 <form on:submit|preventDefault={submit}>
     <div class="d-flex">
         <div>
-            <div class="pr-2">
+            <div class="">
                 <label for="fname">{data.firstFieldLabel}</label>
                 <input required  type="text" id="fname" name="firstname" placeholder="{data.firstFieldPlaceholder}" bind:value={firstName}>
             </div>
@@ -38,7 +38,7 @@ import Modal from "./Modal.svelte";
             </div>
         </div>
         <div>
-            <div class="pr-2">
+            <div class="">
                 <label for="email">{data.emailFieldLabel}</label>
                 <input required  type="email" id="email" name="lastname" placeholder="{data.emailFieldPlaceholder}" bind:value={email}>
             </div>

@@ -7,15 +7,10 @@
 	</div>
 
 	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
-			<li class:active={$page.path === '/'}><a sveltekit:prefetch href="/">Start</a></li>
-		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
+		<a href="/">
+			Higher perspective droning
+			<img alt="drone" src="/drone.png" class="icon"/>
+		</a>
 	</nav>
 
 	<div class="corner">
@@ -23,11 +18,20 @@
 	</div>
 </header>
 
-<style>
+<style scoped>
+	
+.icon {
+	max-width: 3rem;
+	max-height: 3rem;
+}
 	header {
 		display: flex;
 		justify-content: space-between;
 	}
+nav:hover img {
+    transform: translate(-1rem);
+	transition: all 0.3s;
+}
 
 	.corner {
 		width: 3em;
@@ -52,6 +56,10 @@
 		display: flex;
 		justify-content: center;
 		--background: rgba(255, 255, 255, 0.7);
+		margin-top:1rem;
+		align-items: center;
+		text-transform: uppercase;
+		cursor:pointer;
 	}
 
 	svg {

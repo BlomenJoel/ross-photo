@@ -1,8 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
-import { wheelEvent } from './events/wheel'
-import { onDocumentScroll } from './events/scroll';
-import type { Dispatch, StateMachine } from '$lib/types';
+import type { Dispatch } from '$lib/types';
 
 export const states = {
     neutral: 'neutral',
@@ -11,6 +9,8 @@ export const states = {
     returningDown: 'returningDown',
     returningUp: 'returningUp',
 };
+
+const objectsDistance = 4
 
 export const test = async (dispatch: Dispatch):Promise<void> => {
 // Scene
@@ -39,7 +39,6 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
             dispatch('loaded')
             model = gltf.scene;
             model.scale.set(5, 5, 5);
-            model.position.set(0, -12, -5);
             const animations: THREE.AnimationClip[] =  gltf.animations;
             mixer = new THREE.AnimationMixer(gltf.scene);
             action = mixer.clipAction(animations[0])
@@ -77,24 +76,34 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-// STARS // STARS // STARS
-const geometry = new THREE.TetrahedronGeometry(0.09,5);
-const material = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    shading: THREE.FlatShading
-})
-const starsArray = new THREE.Object3D()
-scene.add(starsArray)
-for(let i = 0; i< 2000; i++) {
-    const mesh = new THREE.Mesh(geometry, material)
-    mesh.position.set(
-        Math.random() - 0.5,
-        Math.random() - 0.5,
-        Math.random() - 0.5)
-        mesh.position.multiplyScalar(90 + (Math.random() * 7))
-        mesh.rotation.set(Math.random() * 20,Math.random() * 20,Math.random() * 20)
-        starsArray.add(mesh)
+/**
+ * Particles
+ */
+// Geometry
+const particlesCount = 400
+const positions = new Float32Array(particlesCount * 3)
+
+for(let i = 0; i < particlesCount; i++)
+{
+    positions[i * 3 + 0] = (Math.random() - 0.5) * 100
+    positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * 30;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 100
 }
+
+const particlesGeometry = new THREE.BufferGeometry()
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+
+// Material
+const particlesMaterial = new THREE.PointsMaterial({
+    color: '#ffeded',
+    sizeAttenuation: true,
+    size: 0.06
+})
+
+// Points
+const particles = new THREE.Points(particlesGeometry, particlesMaterial)
+scene.add(particles)
+
 
 // // Lights
 // LIGHT 1
@@ -125,13 +134,16 @@ window.addEventListener('resize', () =>
 /**
  * Camera
  */
+// Group 
+ const cameraGroup = new THREE.Group()
+ scene.add(cameraGroup)
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 0
 camera.position.y = -10
 camera.position.z = 50
 
-scene.add(camera)
+cameraGroup.add(camera)
 
 /**
  * Animate
@@ -145,16 +157,35 @@ let targetY = 0;
 
 const windowHalfX = window.innerWidth / 2;
 const windowHalfY = window.innerHeight / 2;
-
+/**
+ * Cursor
+ */
+const cursor = { x: 0, y: 0}
 const onDocumentMouseMove = (event) => {
     mouseX = (event.clientX - windowHalfX)
     mouseY = (event.clientY - windowHalfY)   
-}
-const stateMachine: StateMachine = {state: states.neutral, page: 0};
 
+    cursor.x = event.clientX / sizes.width - 0.5
+    cursor.y = event.clientY / sizes.height - 0.5
+}
+
+/**
+ * Scroll
+ */
+ let scrollY = window.scrollY
+ let currentSection = 0
+ 
+ window.addEventListener('scroll', () =>
+ {
+     scrollY = window.scrollY
+     const newSection = Math.round(scrollY / sizes.height)
+ 
+     if(newSection != currentSection)
+     {
+         currentSection = newSection
+     }
+ })
 document.addEventListener('mousemove', onDocumentMouseMove);
-document.addEventListener('scroll', () => onDocumentScroll(stateMachine, dispatch))
-document.addEventListener('wheel', (event) => wheelEvent(event, stateMachine, dispatch))
 
 const clock = new THREE.Clock();
 
@@ -164,48 +195,39 @@ window.setInterval(() => {
     mixer.setTime(2)
 }, 7800)
 
+let previousTime = 0
+
 const tick = () =>
 {
-    starsArray.rotation.x += 0.004;
-    starsArray.rotation.y -= 0.0040;
-    starsArray.rotation.z -= 0.002;
     
     targetX = mouseX * 0.001;
     targetY = mouseY * 0.001;
+
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - previousTime
+    previousTime = elapsedTime
+
+    camera.position.y = - scrollY / sizes.height * objectsDistance
+    const parallaxX = cursor.x
+    const parallaxY = - cursor.y
+    
+    cameraGroup.position.x += (parallaxX - cameraGroup.position.x) * 5 * deltaTime
+    cameraGroup.position.y += (parallaxY - cameraGroup.position.y) * 5 * deltaTime
+    
+    
     
     // Update Objects
-    const elapsedTime = clock.getElapsedTime();
     if(model) {
         // Constant rotation
         // model.rotation.y = .5 * elapsedTime;
         model.rotation.y += .5 * (targetX - model.rotation.y)
         model.rotation.x += .5 * (targetY - model.rotation.x)
 
-        // Moving down
-        if(stateMachine.state === states.down) {
-            // starsArray.rotation.x += 0.01;
-
-            model.translateY(-0.25)
-            if(model.position.y <= -30) {
-                stateMachine.state = states.returningUp;
-            }
-            // Moving up
-        } else if(stateMachine.state === states.up) {
-            // starsArray.rotation.x -= 0.01;
-            model.translateY(1)
-            if(model.position.y >= 45) {
-                stateMachine.state = states.returningDown;
-            }
-            // Recentering and follow mouse
-        } else {
-            if(0.5 > model.position.y &&  model.position.y < 0.5 ){
-                dispatch('scrolled-finished')
-                stateMachine.state = states.neutral;
-            }
-            
-            model.position.x  += .5 * ((mouseX * 0.04) - model.position.x)
-            model.translateY(.5 * (- (mouseY * 0.01) - model.position.y))
-        }
+        // model.position.x += (targetX - model.position.x) * 100
+        // model.position.y += (targetX - model.position.y) * 100
+        model.translateX(.5 * ((mouseX * 0.04) - model.position.x))
+        model.translateY(.5 * (- (mouseY * 0.01) - model.position.y))
+    
     }
 
     

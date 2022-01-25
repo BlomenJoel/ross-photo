@@ -1,106 +1,111 @@
-<script context="module" lang="ts">
-import type { Load } from '@sveltejs/kit';
-export const prerender = true;
-export const load: Load = async ({ fetch, page }) => {
-	try {
-		const test = await fetch('initial.json')
-		return { props: { data: await test.json()}}
-		
-	} catch(err) {
-		console.error('Error fetching inital data', err)
-		return { error: new Error(err)}
-	}
-}		
-</script>
-
 <script lang="ts">
-		import { slide, fly } from 'svelte/transition';
 		import Three from '../three/three.svelte'
-		import ContactForm from '$lib/contactForm.svelte';
-
+		import ContactForm from './contact.svelte'
 		export let data;
-
-		const pages = ['start', 'prints', 'contactForm']
-
-		let loaded = false, show = false, page = 0, transistioning = false;
-		type Direction = 'up' | 'down';
-
-		const dispatchLoaded = () => loaded = true;
-
-		const changePage = (direction: Direction, scrolling: boolean) => {
-			transistioning = scrolling;
-			if(scrolling) {
-				if(direction === 'down' && page < pages.length - 1) {
-					page ++;
-				} else if(direction === 'up' && page > 0) {
-					page --;
+		import Prints from './prints/index.svelte'
+		let loaded = false, show = false, page = undefined, contactData = undefined, printsData = undefined;
+		const getData = async (test) => {
+			if(test === 'contact') {
+				if(!contactData) {
+					console.log('run request')
+					contactData = await fetch('initial.json').then(res => res.json())
 				}
-			} 
-		};
+				page = 'contact'; 
+			} else if(test === 'prints') {
+				if(!printsData) {
+					console.log('run request')
+					printsData = await fetch('./prints/prints.json').then(res => res.json());
+				}
+				page = 'prints'; 
+			}
+		}
+		const dispatchLoaded = () => loaded = true;
 </script>
 
 <svelte:head>
 	<title>Higher Perspective Droning</title>
 </svelte:head>
 
-<section>
-	{#if pages[page] === 'start' && !transistioning}
-	<div in:fly="{{ duration: 250, y: -300}}" out:slide>
-		<h1 class="pb-36">
-			HIGHER <br/>PERSPECTIVE <br/> DRONING
-		</h1>
-		{#if !show} 
-		<div class="flex" out:slide>
-			<button on:click="{() => show = !show}" class="inline-flex mr-24">Cool page <img alt="drone" src="/drone.png" class="icon"/> </button>
-			<a href="explore" >
-				<button class="text-black">Simple Explore</button>
-			</a>
-		</div>
-		{/if}
-	</div>
-	{:else if pages[page] === 'contactForm' && !transistioning}
-	<div in:slide="{{ duration: 250}}" out:slide>
-		<a href="/contact">
-			<h1>
-				CONTACT
-			</h1>	
-		</a>
-	</div>
-	{:else if pages[page] === 'prints' && !transistioning}
-	<div in:slide="{{ duration: 250}}" out:slide>
-		<a href="/prints">
-			<h1>
-				PRINTS
-			</h1>	
+<div class="self-center">
+	{#if !show} 
+	<div class="sm:flex page-selection">
+		<button on:click="{() => show = !show}" class="inline-flex mr-24" >Exciting explore<img alt="drone" src="/drone.png" class="icon"/> </button>
+		<a href="explore">
+			<button class="text-black sm:mt-0 mt-8">Simple explore</button>
 		</a>
 	</div>
 	{/if}
+	<section class="first-page">
+		<h1 class="pb-36 text-left">
+			HIGHER <br/>PERSPECTIVE <br/> DRONING
+		</h1>
+	</section>
+	{#if show} 
+	<section>
+		{#if page === 'contact'}
+		<ContactForm  data={contactData}/>
+		{:else}
+		<div on:click={() => { getData('contact')}} class="w-full">
+			<h1 class="cursor-pointer text-center">
+				CONTACT
+			</h1>	
+		</div>
+		{/if}
+	</section>
+	<section>
+		{#if page === 'prints'}
+		<Prints  prints={printsData.prints} categories={printsData.categories}/>
+		{:else}
+		<div on:click={() => { getData('prints')}} class="w-full">
+			<h1 class="cursor-pointer text-center">
+				PRINTS
+			</h1>	
+		</div>
+		{/if}
+	</section>
+	{/if}
 	<Three 
 		bind:show={show} 
-		on:loaded={dispatchLoaded}
-		on:scrolled-finished={() => { transistioning = false }}
-		on:scrolling-down={() => changePage('down',true)} 
-		on:scrolling-up={() => changePage('up',true)} 
+		on:loaded={() => dispatchLoaded()}
 	/>
-</section>
+</div>
 
 <style scoped>
+.first-page {
+	height: 80vh !important;  /* Fixed height to match header */
+}
+.page-selection {
+	position: fixed;
+	bottom: 10rem;
+	z-index: 2;
+}
+section
+{
+    display: flex;
+    align-items: start;
+    height: 100vh;
+    position: relative;
+    will-change: transform;
+}
+h1 {
+	width: 100%;
+	color:whitesmoke;
+	z-index: 2;
+	margin-left: auto;
+	width: auto;
+	margin-right:auto;
+	font-weight: bolder;
+	font-size: 5rem;
+	text-shadow: 3px 3px var(--accent-color);
+}
+
+@media (max-width: 480px) {
 	h1 {
-		width: 100%;
-		color:whitesmoke;
-		z-index: 2;
-		text-align: left;
-		margin-left: auto;
-		width: auto;
-		margin-right:auto;
-		font-weight: bolder;
-		font-size: 5rem;
-		text-shadow: 3px 3px var(--accent-color);
+		font-size: 3rem;
 	}
-	
-	@media (max-width: 480px) {
-		h1 {
-			font-size: 3rem;
-		}
-	}	
+
+	.page-selection {
+		bottom: 4rem;
+	}
+}	
 </style>

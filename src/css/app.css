@@ -1,0 +1,105 @@
+@import '@fontsource/fira-mono';
+@import url(./variables.css);
+@import url(./font.css);
+@import url(./documentLevel.css);
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ELEMENT SPECIFC STUFF */
+input[type=number], input[type=text], input[type=email], select, textarea {
+	width: 100%;
+	padding: 1rem;
+	border: 1px solid black;
+	border-radius: 0.5rem;
+	box-sizing: border-box;
+	margin-top: 0.5rem;
+	margin-bottom: 1rem;
+	resize: vertical;
+	background-color: transparent;
+  }
+
+
+  input[type=submit] {
+	background-color: #04AA6D;
+	color: white;
+	padding: 1rem 2rem;
+	border: none;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	transition: all 0.3s;
+  }
+  
+  input[type=submit]:hover {
+	transform: scale(1.1);
+  }
+  
+  
+section {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	flex: 1;
+}
+
+.icon {
+	max-width: 2rem;
+	max-height: 2rem;
+	display: flex;
+	margin-left: 1rem;
+    align-self: center;
+}
+/* BUTTON AND A TAGS */
+
+button,
+a {
+	color: var(--accent-color);
+	text-decoration: none;
+}
+
+label {
+	color: black;
+}
+
+button {
+	border: var(--accent-color) 2px solid;
+	padding: 1rem;
+}
+button:hover,
+a:hover {
+	font-weight: bolder;
+}
+
+input,
+button {
+	font-size: inherit;
+	font-family: inherit;
+}
+
+button:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* SCROLLER */
+
+
+/* width */
+::-webkit-scrollbar {
+	width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+background: #555;
+}

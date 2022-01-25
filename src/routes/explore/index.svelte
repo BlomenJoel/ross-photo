@@ -18,6 +18,9 @@
     // export let data;
 </script>
 
+<svelte:head>
+	<title>Explore - Higher Perspective Droning</title>
+</svelte:head>
 <section>
     <nav>
 		<ul>
@@ -39,10 +42,10 @@
         margin-bottom: 1rem;
         font-size: 3rem;
         text-transform: uppercase;
+        transition: all 0.3s ease-out;
     }
     li:hover {
         transform: translate(1rem);
-        transition: all 0.3s ease-out;
     }
 
     @media (max-width: 480px) {

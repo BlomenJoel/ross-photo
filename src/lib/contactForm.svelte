@@ -40,7 +40,7 @@ import Modal from "./Modal.svelte";
         <div>
             <div class="">
                 <label for="email">{data.emailFieldLabel}</label>
-                <input required  type="email" id="email" name="lastname" placeholder="{data.emailFieldPlaceholder}" bind:value={email}>
+                <input required  type="email" id="email" name="email" placeholder="{data.emailFieldPlaceholder}" bind:value={email}>
             </div>
             
             <div>
@@ -62,31 +62,12 @@ import Modal from "./Modal.svelte";
 {/if}
 
 <style scoped>
-    form {
+form {
     width: 80%
 }
-
-input[type=text], input[type=email], select, textarea {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  box-sizing: border-box;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  resize: vertical;
-}
-
-input[type=submit] {
-  background-color: #04AA6D;
-  color: white;
-  padding: 1rem 2rem;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-input[type=submit]:hover {
-  background-color: #45a049;
+@media (max-width: 480px) {
+        form {
+            width: 100%
+        }
 }
 </style>

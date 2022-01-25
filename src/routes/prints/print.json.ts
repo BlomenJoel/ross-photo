@@ -5,7 +5,14 @@ import { fetchData } from '../../cms/api.json';
 
 export const get: RequestHandler<Locals> = async (request) => {
 	const slug = request.query.get('slug');
-	const query = `*[_type == "print" && slug == "${slug}"][0]`
+	const query = `*[_type == "print" && slug == "${slug}"][0]{
+		...,
+		  categories[]{
+			_type == "reference" => {
+			"title": @ -> title
+		  }
+		}
+	  }`
     const response = await fetchData(query);
 	return { body: response };
 };

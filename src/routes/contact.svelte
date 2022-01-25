@@ -27,6 +27,12 @@
     section {
         max-width: 60%;
         place-self: center;
+    }
 
-            }
+   
+@media (max-width: 480px) {
+    section {
+            max-width: 100%
+        }
+}
 </style>

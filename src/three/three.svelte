@@ -28,12 +28,12 @@
 
 <style>
 	canvas {
-		height: -webkit-fill-available !important;
 		width: -webkit-fill-available !important;
-		position: absolute;
+ 		position: fixed;
 		margin-left: auto;
 		margin-right: auto;
     	top: 0;
+		left:0;
     	outline: none;    
 		z-index: -1;
 	}

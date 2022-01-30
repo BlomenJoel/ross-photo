@@ -25,7 +25,7 @@
 			<img alt="drone" src="/drone.png" class="icon drone"/>
 		</a>
 		<a class="corner relative" href="/checkout">
-			{#if cart.length > 0}
+			{#if cart && cart.length > 0}
 			<div class="cart" class:shake={animate} >
 				<img alt="cart" src="/shopping-cart-solid.svg" class="icon"/>
 				<span class="cart-count">

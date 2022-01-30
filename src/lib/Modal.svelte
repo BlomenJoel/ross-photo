@@ -28,8 +28,9 @@
     </div>
     
     <style scoped >
-    
+        
         .modal-body-wrapper {
+            max-width: 60%;
             padding:1rem;
         }
     
@@ -61,13 +62,15 @@
         }
         .modal-wrapper {
             position: fixed;
-            height: -webkit-fill-available;
-            width: -webkit-fill-available;
+            height: 100vh;
+            width: 100vw;
             background-color: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(2px);
             z-index: 10;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
             display: flex;
         }
-    </style>
+        </style>

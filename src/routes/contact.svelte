@@ -20,7 +20,7 @@
     export let data;
 </script>
 <section>
-    <ContactForm  data={data[0]}/>
+    <ContactForm  data={data}/>
 </section>
 
 <style scoped>

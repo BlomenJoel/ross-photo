@@ -42,7 +42,9 @@ section {
 	align-items: center;
 	flex: 1;
 }
-
+input:required:invalid {
+	border: 2px solid red;
+  }
 .icon {
 	max-width: 2rem;
 	max-height: 2rem;

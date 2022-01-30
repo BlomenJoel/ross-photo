@@ -3,7 +3,6 @@
 main, header {
 	padding: 1rem;
 	width: 100%;
-	max-width: 1024px;
 	margin: 0 auto;
 	margin: 0 auto;
 	flex-direction: column;
@@ -12,6 +11,7 @@ main, header {
 }
 
 main {
+	max-width: 1024px;
 	flex: 1;
 }
 

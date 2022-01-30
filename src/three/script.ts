@@ -2,14 +2,6 @@ import './style.css'
 import * as THREE from 'three'
 import type { Dispatch } from '$lib/types';
 
-export const states = {
-    neutral: 'neutral',
-    up: 'up',
-    down: 'down',
-    returningDown: 'returningDown',
-    returningUp: 'returningUp',
-};
-
 const objectsDistance = 4
 
 export const test = async (dispatch: Dispatch):Promise<void> => {
@@ -54,7 +46,7 @@ Promise.all([GLTFLoaderImport(), DRACOLoaderImport()]).then(result => {
             console.log( 'Error while loading gltf', error );
         }
     );
-}).catch(err => {console.log('error while loadibg importers', err)})
+}).catch(err => {console.log('error while loading importers', err)})
 
 /**
  * Sizes

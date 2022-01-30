@@ -19,6 +19,7 @@ export type Size = {
 	originalPrice: number,
 }
 export type Print = {
+	_id: string,
 	alt: string,
 	slug: string,
 	image: string,
@@ -29,6 +30,7 @@ export type Print = {
 	sizes: Size[]
 }
 export type Item = {
+	_id: string,
 	slug: string
 	size: Size,
 	quantity: number,

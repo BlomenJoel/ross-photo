@@ -1,19 +1,17 @@
 <script lang="ts">
 		import Three from '../three/three.svelte'
-		import ContactForm from './contact.svelte'
-		export let data;
+		import ContactForm from '../lib/contactForm.svelte'
 		import Prints from './prints/index.svelte'
 		let loaded = false, show = false, page = undefined, contactData = undefined, printsData = undefined;
-		const getData = async (test) => {
-			if(test === 'contact') {
+		
+		const getData = async (section) => {
+			if(section === 'contact') {
 				if(!contactData) {
-					console.log('run request')
 					contactData = await fetch('initial.json').then(res => res.json())
 				}
 				page = 'contact'; 
-			} else if(test === 'prints') {
+			} else if(section === 'prints') {
 				if(!printsData) {
-					console.log('run request')
 					printsData = await fetch('./prints/prints.json').then(res => res.json());
 				}
 				page = 'prints'; 
@@ -54,7 +52,9 @@
 	</section>
 	<section>
 		{#if page === 'prints'}
-		<Prints  prints={printsData.prints} categories={printsData.categories}/>
+		<Prints allPrints={printsData.prints} categories={printsData.categories}
+		redirect={false}
+		horizontal={true}/>
 		{:else}
 		<div on:click={() => { getData('prints')}} class="w-full">
 			<h1 class="cursor-pointer text-center">
@@ -85,7 +85,6 @@ section
     align-items: start;
     height: 100vh;
     position: relative;
-    will-change: transform;
 }
 h1 {
 	width: 100%;

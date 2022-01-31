@@ -21,7 +21,6 @@
 
     export let allPrints: Print[], categories: Category[], horizontal = false, redirect = true;
     let currentPrints: Print[] = allPrints;
-    console.log('currentprints', currentPrints)
     let activeCategory = '';    
     page.subscribe((currentPage) => {
         activeCategory = currentPage.query.get('category')
@@ -71,7 +70,7 @@
     <ul class:horizontal={horizontal}>
         {#each currentPrints as print}
         <li>
-            <a class="print-wrapper" href={'prints/' + print.slug}>
+            <a class="{horizontal? 'mx-8': 'mx-auto'} print-wrapper" href={'prints/' + print.slug}>
                     <img class="image-wrapper" alt={print.alt} src={urlFor(print.image).url()} />
                     <div class="bottom-0">
                         <div class="flex justify-center">
@@ -117,7 +116,8 @@
         width: 25rem;
         height: 25rem;
         display: flex;
-        margin: 2rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
         text-align: -webkit-center;
         background-color: #c1c1c18a;
         padding: 2rem;
@@ -133,4 +133,10 @@
     p  {
         cursor: pointer;
     }
+    @media (max-width: 480px) {
+        .print-wrapper {
+            width: 20rem;
+        }
+    }	
+    
 </style>

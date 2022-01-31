@@ -59,6 +59,7 @@
 	transition: all 0.4s;
 }
 header {
+	background: rgba(255, 255, 255, 0.7);
 	justify-content: space-between;
 	position: fixed;
     z-index: 3;

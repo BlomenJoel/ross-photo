@@ -19,6 +19,9 @@
 
     export let data;
 </script>
+<svelte:head>
+	<title>Contact - Higher Perspective Droning</title>
+</svelte:head>
 <section>
     <ContactForm  data={data}/>
 </section>

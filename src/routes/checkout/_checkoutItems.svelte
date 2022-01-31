@@ -95,4 +95,11 @@
             /* ACCENT COLOR w. opacity*/
             background-color: rgb(255, 62, 0, 0.5)
         }
+        
+@media (max-width: 480px) {
+    img {
+            max-width: 4rem;
+            max-height: 4rem;
+        }
+}	
     </style>

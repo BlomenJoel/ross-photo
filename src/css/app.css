@@ -42,7 +42,7 @@ section {
 	align-items: center;
 	flex: 1;
 }
-input:required:invalid {
+input:required:invalid, select:required:invalid, textarea:required:invalid {
 	border: 2px solid red;
   }
 .icon {

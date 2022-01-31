@@ -21,14 +21,14 @@
 </script>
 
 <svelte:head>
-	<title>Higher Perspective Droning</title>
+	<title>{show ? 'Explore - ' : ''}Higher Perspective Droning</title>
 </svelte:head>
 
 <div class="self-center">
 	{#if !show} 
 	<div class="sm:flex page-selection">
 		<button on:click="{() => show = !show}" class="inline-flex mr-24" >Exciting explore<img alt="drone" src="/drone.png" class="icon"/> </button>
-		<a href="explore">
+		<a href="menu">
 			<button class="text-black sm:mt-0 mt-8">Simple explore</button>
 		</a>
 	</div>
@@ -71,12 +71,15 @@
 </div>
 
 <style scoped>
+	button {
+		    max-width: 15rem;
+	}
 .first-page {
 	height: 80vh !important;  /* Fixed height to match header */
 }
 .page-selection {
 	position: fixed;
-	bottom: 10rem;
+	bottom: 15rem;
 	z-index: 2;
 }
 section

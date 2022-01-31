@@ -21,19 +21,27 @@
     import Quantity from '../../lib/quantity.svelte'
     import { changeCart } from '../../store/cart'
     import type { Print, Size } from '$lib/types';
+    import { goto } from '$app/navigation';
+
     export let print: Print;
     let quantity = 0;
+    const backText = "<-"
     let size: Size = print.sizes ? print.sizes[0] : undefined
+
+    const goBack = () => {
+      history.back()
+    }
 </script>
 
 <svelte:head>
 	<title>{print.slug} - Higher Perspective Droning</title>
 </svelte:head>
+<button on:click={() => goBack()} class="mb-2">{backText}</button>
 <div class="print-wrapper lg:flex">
     <div class="image-wrapper">
         <img alt={print.alt} src={urlFor(print.image).url()} />
     </div>
-    <div class="text-left">
+    <div class="text-left sm:pl-12">
         <h3 class="sm:pt-24">{print.title}</h3>
         <div class="flex">
             {#if print.categories && print.categories.length > 0}
@@ -62,6 +70,11 @@
 
 
 <style scoped>
+    button {
+        max-width: 3rem;
+        padding: 0.5rem;
+        border-radius: .25rem;
+    }
     form, select, input {
   max-width: 11rem;
 }

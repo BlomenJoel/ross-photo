@@ -19,7 +19,7 @@
 </script>
 
 <svelte:head>
-	<title>Explore - Higher Perspective Droning</title>
+	<title>Menu - Higher Perspective Droning</title>
 </svelte:head>
 <section>
     <nav>

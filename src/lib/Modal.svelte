@@ -30,14 +30,13 @@
     <style scoped >
         
         .modal-body-wrapper {
-            max-width: 60%;
             padding:1rem;
         }
-    
+        
         .header, .body {
             margin-bottom: 0.5rem;
         }
-    
+        
         .modal-header {
             display: flex;    
             justify-content: flex-end;
@@ -51,6 +50,7 @@
             position: relative; 
         }
         .modal {
+            max-width: 60%;
             position: relative;
             margin: auto;
             height: auto;
